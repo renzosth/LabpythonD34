@@ -130,3 +130,173 @@ def cambiar_estado_libro(isbn_objetivo, nuevo_estado):
 
         with open(RUTA_LIBROS, "w", encoding="utf-8") as archivo:
             archivo.writelines(lineas_nuevas)
+
+
+def agregar_devolucion():
+    print("\n--- REGISTRAR DEVOLUCION ---")
+    dni_buscar = input("Ingrese el DNI del usuario: ").strip()
+
+    # 1. Buscar el nombre del usuario usando el DNI
+    nombre_buscar = ""
+
+    if os.path.exists(RUTA_USUARIOS):
+        with open(RUTA_USUARIOS, "r", encoding="utf-8") as archivo:
+            for linea in archivo:
+                linea_limpia = linea.strip()
+                if not linea_limpia:
+                    continue
+                partes = linea_limpia.split(",")
+                if partes[0] == dni_buscar:
+                    nombre_buscar = partes[1]
+                    break
+
+    if nombre_buscar == "":
+        print("No se encontro ningun usuario registrado con ese DNI.")
+        return
+
+    # 2. Recolectar todos los préstamos RESERVADOS de este usuario
+    prestamos_activos = []
+    if os.path.exists(RUTA_PRESTAMOS):
+        with open(RUTA_PRESTAMOS, "r", encoding="utf-8") as archivo:
+            for linea in archivo:
+                linea_limpia = linea.strip()
+                if not linea_limpia:
+                    continue
+                partes = linea_limpia.split(",")
+                if len(partes) >= 5 and partes[0] == nombre_buscar and partes[4] == "(RESERVADO)":
+                    prestamos_activos.append(partes)
+
+    if len(prestamos_activos) == 0:
+        print(f"El usuario {nombre_buscar} no tiene libros pendientes de devolucion.")
+        return
+
+    # 3. Mostrar los libros que tiene en su poder
+    print(f"\nEl usuario {nombre_buscar} debe reintegrar los siguientes libros:")
+    for idx, prestamo in enumerate(prestamos_activos, 1):
+        print(f"[{idx}] ISBN: {prestamo[2]} - Titulo: {prestamo[1]} (Dias pactados: {prestamo[3]})")
+
+    print("\nOpciones de devolucion:")
+    print("1. Reintegrar un solo libro (1 por 1)")
+    print("2. Reintegrar TODOS los libros de una vez")
+    opcion = input("Seleccione una opcion (1 o 2): ").strip()
+
+    libros_a_devolver = []
+
+    if opcion == "1":
+        seleccion = input("Ingrese el numero del libro a devolver de la lista: ").strip()
+        if not seleccion.isdigit() or int(seleccion) < 1 or int(seleccion) > len(prestamos_activos):
+            print("Seleccion invalida.")
+            return
+        libros_a_devolver.append(prestamos_activos[int(seleccion) - 1])
+    elif opcion == "2":
+        libros_a_devolver = prestamos_activos
+    else:
+        print("Opcion invalida.")
+        return
+
+    # 4. Procesar los cálculos individuales, tickets e importes finales
+    isbns_devueltos = [p[2] for p in libros_a_devolver]
+    tickets_calculados = {}
+
+    print("\n--- DETALLE DE LIQUIDACION ---")
+    for prestamo in libros_a_devolver:
+        titulo_libro = prestamo[1]
+        isbn_libro = prestamo[2]
+        dias_pactados = int(prestamo[3])
+
+        print(f"\n> Libro: {titulo_libro} (ISBN: {isbn_libro})")
+        dias_reales_str = input(f"  El prestamo era por {dias_pactados} dias. ¿Cuantos dias pasaron en realidad?: ").strip()
+        if dias_reales_str == "" or not dias_reales_str.isdigit():
+            print("  Cantidad invalida. Se cancelo el proceso.")
+            return
+
+        dias_reales = int(dias_reales_str)
+        costo_base = dias_pactados * PRECIO_POR_DIA
+        dias_demora = 0
+        multa = 0
+
+        if dias_reales > dias_pactados:
+            dias_demora = dias_reales - dias_pactados
+            multa = dias_demora * MULTA_POR_DIA
+
+        total_libro = costo_base + multa
+
+        tickets_calculados[isbn_libro] = {
+            'base': costo_base,
+            'demora': dias_demora,
+            'multa': multa,
+            'total': total_libro,
+            'titulo': titulo_libro
+        }
+
+    # 5. Reescribir el archivo prestamos.txt actualizando los estados
+    lineas_nuevas_prestamos = []
+    if os.path.exists(RUTA_PRESTAMOS):
+        with open(RUTA_PRESTAMOS, "r", encoding="utf-8") as archivo:
+            for linea in archivo:
+                linea_limpia = linea.strip()
+                if not linea_limpia:
+                    continue
+                partes = linea_limpia.split(",")
+
+                if len(partes) >= 5:
+                    if partes[0] == nombre_buscar and partes[4] == "(RESERVADO)" and partes[2] in isbns_devueltos:
+                        isbn_act = partes[2]
+                        monto_final = tickets_calculados[isbn_act]['total']
+                        linea = f"{partes[0]},{partes[1]},{partes[2]},{partes[3]},(REINTEGRADO),{monto_final}\n"
+                        cambiar_estado_libro(isbn_act, "ACTIVO")
+                    else:
+                        linea = linea_limpia + "\n"
+                lineas_nuevas_prestamos.append(linea)
+
+    with open(RUTA_PRESTAMOS, "w", encoding="utf-8") as archivo:
+        archivo.writelines(lineas_nuevas_prestamos)
+
+    # 6. Desplegar el Ticket definitivo consolidado
+    print("\n========================================")
+    print("         TICKET DE DEVOLUCION           ")
+    print("========================================")
+    print(f"Usuario: {nombre_buscar}")
+    total_general = 0
+
+    for isbn, datos in tickets_calculados.items():
+        print(f"\n* {datos['titulo']} ({isbn})")
+        print(f"  - Costo base ({PRECIO_POR_DIA}/dia): ${datos['base']}")
+        if datos['multa'] > 0:
+            print(f"  - Dias de retraso: {datos['demora']} dias (Multa por dia: ${MULTA_POR_DIA})")
+            print(f"  - Monto de multa: ${datos['multa']}")
+        print(f"  - Total de este libro: ${datos['total']}")
+        total_general += datos['total']
+
+    print("\n========================================")
+    print(f" TOTAL GENERAL A ABONAR: ${total_general}")
+    print("========================================")
+    print("Devolucion efectuada y registros actualizados correctamente.")
+
+
+def mostrar_todos_los_prestamos():
+    print("\n--- LISTADO GENERAL DE PRESTAMOS ---")
+    if not os.path.exists(RUTA_PRESTAMOS):
+        print("No hay archivo de prestamos todavia.")
+        return
+
+    with open(RUTA_PRESTAMOS, "r", encoding="utf-8") as archivo:
+
+        for linea in archivo:
+            linea_limpia = linea.strip()
+            if not linea_limpia:
+                continue
+            partes = linea_limpia.split(",")
+
+            if len(partes) >= 5:
+                usuario = partes[0]
+                libro = partes[1]
+                isbn = partes[2]
+                dias = partes[3]
+                estado = partes[4]
+
+                if estado == "(REINTEGRADO)":
+                    importe_abonado = partes[5] if len(partes) > 5 else int(dias) * PRECIO_POR_DIA
+                    print(f"Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}] - Importe Abonado: ${importe_abonado}")
+                else:
+                    print(f"Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}]")
