@@ -66,8 +66,8 @@ def borrar_usuario():
         with open(RUTA_PRESTAMOS, "r", encoding="utf-8") as archivo:
             for linea in archivo:
                 partes_prestamo = linea.strip().split(",")
-                # partes_prestamo[0] es el Nombre y partes_prestamo[4] es el Estado
-                if partes_prestamo[0] == nombre_usuario and partes_prestamo[4] == "(RESERVADO)":
+                # Formato: [0]=DNI, [5]=estado
+                if len(partes_prestamo) >= 6 and partes_prestamo[0] == dni_buscar and partes_prestamo[5] == "(RESERVADO)":
                     tiene_libros_pendientes = True
                     break
 

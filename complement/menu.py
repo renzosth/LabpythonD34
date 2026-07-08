@@ -18,7 +18,8 @@ def menu_datos():
     print("1. USUARIOS REGISTRADOS")
     print("2. LIBROS")
     print("3. PRESTAMOS")
-    print("4. VOLVER")
+    print("4. ESTADISTICAS")
+    print("5. VOLVER")
 
 
 def limpiar_pantalla():

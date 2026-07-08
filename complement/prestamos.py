@@ -100,8 +100,8 @@ def agregar_prestamo():
         # Cambiar el estado del libro a RESERVADO en libros.txt
         cambiar_estado_libro(isbn, "RESERVADO")
 
-        # Preparar la línea para el archivo de préstamos
-        nueva_linea = f"{nombre_usuario},{nombre_libro},{isbn},{dias},(RESERVADO)\n"
+        # Preparar la línea para el archivo de préstamos (incluye DNI)
+        nueva_linea = f"{dni},{nombre_usuario},{nombre_libro},{isbn},{dias},(RESERVADO)\n"
         lineas_nuevas_prestamos.append(nueva_linea)
 
     # 4. Guardar los nuevos préstamos en prestamos.txt
@@ -154,7 +154,7 @@ def agregar_devolucion():
         print("No se encontro ningun usuario registrado con ese DNI.")
         return
 
-    # 2. Recolectar todos los préstamos RESERVADOS de este usuario
+    # 2. Recolectar todos los préstamos RESERVADOS de este usuario (busca por DNI)
     prestamos_activos = []
     if os.path.exists(RUTA_PRESTAMOS):
         with open(RUTA_PRESTAMOS, "r", encoding="utf-8") as archivo:
@@ -163,7 +163,8 @@ def agregar_devolucion():
                 if not linea_limpia:
                     continue
                 partes = linea_limpia.split(",")
-                if len(partes) >= 5 and partes[0] == nombre_buscar and partes[4] == "(RESERVADO)":
+                # Formato: [0]=DNI, [1]=nombre, [2]=titulo, [3]=isbn, [4]=dias, [5]=estado
+                if len(partes) >= 6 and partes[0] == dni_buscar and partes[5] == "(RESERVADO)":
                     prestamos_activos.append(partes)
 
     if len(prestamos_activos) == 0:
@@ -173,7 +174,8 @@ def agregar_devolucion():
     # 3. Mostrar los libros que tiene en su poder
     print(f"\nEl usuario {nombre_buscar} debe reintegrar los siguientes libros:")
     for idx, prestamo in enumerate(prestamos_activos, 1):
-        print(f"[{idx}] ISBN: {prestamo[2]} - Titulo: {prestamo[1]} (Dias pactados: {prestamo[3]})")
+        # [3]=isbn, [2]=titulo, [4]=dias
+        print(f"[{idx}] ISBN: {prestamo[3]} - Titulo: {prestamo[2]} (Dias pactados: {prestamo[4]})")
 
     print("\nOpciones de devolucion:")
     print("1. Reintegrar un solo libro (1 por 1)")
@@ -195,14 +197,18 @@ def agregar_devolucion():
         return
 
     # 4. Procesar los cálculos individuales, tickets e importes finales
-    isbns_devueltos = [p[2] for p in libros_a_devolver]
+    isbns_devueltos = [p[3] for p in libros_a_devolver]  # isbn está en [3]
     tickets_calculados = {}
 
     print("\n--- DETALLE DE LIQUIDACION ---")
     for prestamo in libros_a_devolver:
-        titulo_libro = prestamo[1]
-        isbn_libro = prestamo[2]
-        dias_pactados = int(prestamo[3])
+        titulo_libro = prestamo[2]   # titulo en [2]
+        isbn_libro = prestamo[3]     # isbn en [3]
+        try:
+            dias_pactados = int(prestamo[4])  # dias en [4]
+        except ValueError:
+            print(f"  Error al leer los dias del préstamo de '{titulo_libro}'. Se omite.")
+            continue
 
         print(f"\n> Libro: {titulo_libro} (ISBN: {isbn_libro})")
         dias_reales_str = input(f"  El prestamo era por {dias_pactados} dias. ¿Cuantos dias pasaron en realidad?: ").strip()
@@ -239,11 +245,12 @@ def agregar_devolucion():
                     continue
                 partes = linea_limpia.split(",")
 
-                if len(partes) >= 5:
-                    if partes[0] == nombre_buscar and partes[4] == "(RESERVADO)" and partes[2] in isbns_devueltos:
-                        isbn_act = partes[2]
+                # Formato: [0]=DNI, [1]=nombre, [2]=titulo, [3]=isbn, [4]=dias, [5]=estado
+                if len(partes) >= 6:
+                    if partes[0] == dni_buscar and partes[5] == "(RESERVADO)" and partes[3] in isbns_devueltos:
+                        isbn_act = partes[3]
                         monto_final = tickets_calculados[isbn_act]['total']
-                        linea = f"{partes[0]},{partes[1]},{partes[2]},{partes[3]},(REINTEGRADO),{monto_final}\n"
+                        linea = f"{partes[0]},{partes[1]},{partes[2]},{partes[3]},{partes[4]},(REINTEGRADO),{monto_final}\n"
                         cambiar_estado_libro(isbn_act, "ACTIVO")
                     else:
                         linea = linea_limpia + "\n"
@@ -256,7 +263,7 @@ def agregar_devolucion():
     print("\n========================================")
     print("         TICKET DE DEVOLUCION           ")
     print("========================================")
-    print(f"Usuario: {nombre_buscar}")
+    print(f"DNI: {dni_buscar} - Usuario: {nombre_buscar}")
     total_general = 0
 
     for isbn, datos in tickets_calculados.items():
@@ -288,15 +295,17 @@ def mostrar_todos_los_prestamos():
                 continue
             partes = linea_limpia.split(",")
 
-            if len(partes) >= 5:
-                usuario = partes[0]
-                libro = partes[1]
-                isbn = partes[2]
-                dias = partes[3]
-                estado = partes[4]
+            # Formato: [0]=DNI, [1]=nombre, [2]=titulo, [3]=isbn, [4]=dias, [5]=estado, [6]=monto(opt)
+            if len(partes) >= 6:
+                dni_u = partes[0]
+                usuario = partes[1]
+                libro = partes[2]
+                isbn = partes[3]
+                dias = partes[4]
+                estado = partes[5]
 
                 if estado == "(REINTEGRADO)":
-                    importe_abonado = partes[5] if len(partes) > 5 else int(dias) * PRECIO_POR_DIA
-                    print(f"Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}] - Importe Abonado: ${importe_abonado}")
+                    importe_abonado = partes[6] if len(partes) > 6 else int(dias) * PRECIO_POR_DIA
+                    print(f"DNI: {dni_u} - Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}] - Importe Abonado: ${importe_abonado}")
                 else:
-                    print(f"Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}]")
+                    print(f"DNI: {dni_u} - Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}]")

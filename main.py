@@ -2,6 +2,7 @@ from complement.menu import menu_principal, menu_solicitudes, menu_datos, limpia
 from complement.usuarios import agregar_usuario, borrar_usuario, mostrar_todos_los_usuarios
 from complement.prestamos import agregar_prestamo, agregar_devolucion, mostrar_todos_los_prestamos
 from complement.libros import mostrar_todos_los_libros
+from complement.estadisticas import mostrar_estadisticas
 
 def main():
     while True:
@@ -50,6 +51,9 @@ def main():
                     mostrar_todos_los_prestamos()
                     input("\nPresione Enter para continuar...")
                 elif sub_opcion == "4":
+                    mostrar_estadisticas()
+                    input("\nPresione Enter para continuar...")
+                elif sub_opcion == "5":
                     print("Volviendo al menú principal...")
                     break
                 else:
