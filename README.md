@@ -91,3 +91,14 @@ a. respuestas
 	q. "no me figura ninguna cuenta"
 	  puedes agregarla manualmente desde el bloc de notas usuarios.txt o desde la opcion SOLICITUDES/AGREGAR USUARIO.
 		1. Incluye el programa por medio de configuración o por el usuario.txt
+
+******************************************************************
+>>USO DE LA IA.
+
+Se utilizó Claude (Anthropic) como herramienta de apoyo durante el desarrollo, específicamente para:
+
+1	Revisar el código ya escrito por el grupo y detectar errores puntuales (por ejemplo, una inconsistencia entre el texto de una opción de menú y la función que realmente ejecutaba).
+2	Recibir sugerencias de corrección, que el equipo analizó y aplicó de forma consciente antes de incorporarlas.
+3	Ordenar el proceso de subida del proyecto a GitHub en commits progresivos, agrupando el trabajo por módulo/funcionalidad en lugar de subir todo el código de una sola vez.
+
+Todas las decisiones de diseño (estructura de módulos, validaciones, cálculo de multas, manejo de errores) fueron discutidas y comprendidas por el equipo, que puede justificar cada una de ellas.
