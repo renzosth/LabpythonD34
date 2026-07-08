@@ -1,5 +1,8 @@
 # LabpythonD34 — Sistema de Gestión de Biblioteca
 
+Link video demo: https://drive.google.com/file/d/10ONRsJrT3neg3S8WYBRX8P_jlTX7CF69/view?usp=drive_link
+Link Repositorio: https://github.com/renzosth/LabpythonD34
+
 **Escenario 7 | Comisión isiD 1.4k**
 
 Integrantes:
