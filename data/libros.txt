@@ -1,0 +1,10 @@
+1,Don Quijote de la Mancha,Miguel de Cervantes,Novela clásica / Aventuras,ACTIVO
+2,Cien años de soledad,Gabriel García Márquez,Realismo mágico,ACTIVO
+3,1984,George Orwell,Ciencia ficción distópica,RESERVADO
+4,El principito,Antoine de Saint-Exupéry,Fábula / Literatura infantil y filosófica,ACTIVO
+5,La Odisea,Homero,Epopeya,RESERVADO
+6,Crimen y castigo,Fiódor Dostoyevski,Novela psicológica,ACTIVO
+7,Orgullo y prejuicio,Jane Austen,Novela romántica,RESERVADO
+8,La metamorfosis,Franz Kafka,Novela corta / Existencialismo,ACTIVO
+9,El arte de la guerra,Sun Tzu,Estrategia / Filosofía militar,ACTIVO
+10,La República,Platón,Filosofía,ACTIVO
