@@ -1,6 +1,7 @@
 import os
-RUTA_USUARIOS = "data/usuarios.txt"
-RUTA_PRESTAMOS = "data/prestamos.txt"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RUTA_USUARIOS = os.path.join(BASE_DIR, "data", "usuarios.txt")
+RUTA_PRESTAMOS = os.path.join(BASE_DIR, "data", "prestamos.txt")
 
 
 def agregar_usuario():
@@ -9,6 +10,9 @@ def agregar_usuario():
 
     if dni == "":
         print("El DNI no puede estar vacio.")
+        return
+    if not dni.isdigit():
+        print("El DNI debe contener solo numeros.")
         return
 
     # Comprobamos si el DNI ya esta en el archivo
@@ -43,6 +47,9 @@ def agregar_usuario():
 def borrar_usuario():
     print("\n--- DAR DE BAJA USUARIO ---")
     dni_buscar = input("Ingrese el DNI a dar de baja: ").strip()
+    if not dni_buscar.isdigit():
+        print("El DNI debe contener solo numeros.")
+        return
 
     # 1. Primero vemos si existe, si esta activo y guardamos su nombre para validar
     encontrado = False

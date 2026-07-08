@@ -1,5 +1,6 @@
 import os
-RUTA_PRESTAMOS = "data/prestamos.txt"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RUTA_PRESTAMOS = os.path.join(BASE_DIR, "data", "prestamos.txt")
 PRECIO_POR_DIA = 500
 
 

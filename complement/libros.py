@@ -1,5 +1,6 @@
 import os
-RUTA_LIBROS = "data/libros.txt"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RUTA_LIBROS = os.path.join(BASE_DIR, "data", "libros.txt")
 
 
 def mostrar_todos_los_libros():

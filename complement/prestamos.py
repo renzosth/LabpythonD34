@@ -1,14 +1,18 @@
 import os
-RUTA_PRESTAMOS = "data/prestamos.txt"
-RUTA_USUARIOS = "data/usuarios.txt"
-RUTA_LIBROS = "data/libros.txt"
-PRECIO_POR_DIA = 500      
-MULTA_POR_DIA = 1000      
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RUTA_PRESTAMOS = os.path.join(BASE_DIR, "data", "prestamos.txt")
+RUTA_USUARIOS = os.path.join(BASE_DIR, "data", "usuarios.txt")
+RUTA_LIBROS = os.path.join(BASE_DIR, "data", "libros.txt")
+PRECIO_POR_DIA = 500
+MULTA_POR_DIA = 1000
 
 
 def agregar_prestamo():
     print("\n--- REGISTRAR NUEVO PRESTAMO ---")
     dni = input("Ingrese el DNI del usuario: ").strip()
+    if not dni.isdigit():
+        print("El DNI debe contener solo numeros.")
+        return
 
     # 1. Buscar el nombre del usuario por su DNI
     nombre_usuario = ""
@@ -135,6 +139,9 @@ def cambiar_estado_libro(isbn_objetivo, nuevo_estado):
 def agregar_devolucion():
     print("\n--- REGISTRAR DEVOLUCION ---")
     dni_buscar = input("Ingrese el DNI del usuario: ").strip()
+    if not dni_buscar.isdigit():
+        print("El DNI debe contener solo numeros.")
+        return
 
     # 1. Buscar el nombre del usuario usando el DNI
     nombre_buscar = ""
@@ -305,7 +312,13 @@ def mostrar_todos_los_prestamos():
                 estado = partes[5]
 
                 if estado == "(REINTEGRADO)":
-                    importe_abonado = partes[6] if len(partes) > 6 else int(dias) * PRECIO_POR_DIA
+                    if len(partes) > 6:
+                        importe_abonado = partes[6]
+                    else:
+                        try:
+                            importe_abonado = int(dias) * PRECIO_POR_DIA
+                        except ValueError:
+                            importe_abonado = "?"
                     print(f"DNI: {dni_u} - Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}] - Importe Abonado: ${importe_abonado}")
                 else:
                     print(f"DNI: {dni_u} - Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}]")
