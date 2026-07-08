@@ -20,6 +20,8 @@ def agregar_usuario():
         with open(RUTA_USUARIOS, "r", encoding="utf-8") as archivo:
             for linea in archivo:
                 partes = linea.strip().split(",")
+                if len(partes) < 3:
+                    continue
                 if partes[0] == dni:
                     if partes[2] == "ACTIVO":
                         print("Este usuario ya existe y esta activo.")
@@ -63,7 +65,7 @@ def borrar_usuario():
                     nombre_usuario = partes[1] # Guardamos el nombre (Ej: "JUAN PEREZ")
                     break
 
-    if encontrado == False:
+    if not encontrado:
         print("No se encontro el usuario o ya esta de baja.")
         return
 
@@ -78,7 +80,7 @@ def borrar_usuario():
                     tiene_libros_pendientes = True
                     break
 
-    if tiene_libros_pendientes == True:
+    if tiene_libros_pendientes:
         print(f"No se puede dar de baja a {nombre_usuario} porque tiene un libro RESERVADO sin devolver.")
         return
 
@@ -93,11 +95,16 @@ def mostrar_todos_los_usuarios():
         print("No hay archivo de usuarios todavia.")
         return
 
+    contador = 0
     with open(RUTA_USUARIOS, "r", encoding="utf-8") as archivo:
         for linea in archivo:
             partes = linea.strip().split(",")
+            if len(partes) < 3:
+                continue
             # partes[0] es DNI, partes[1] es Nombre, partes[2] es ESTADO
             print(f"DNI: {partes[0]} - Nombre: {partes[1]} [{partes[2]}]")
+            contador += 1
+    print(f"\nTotal de usuarios registrados: {contador}")
 
 
 # Funcion comun para modificar el estado (Activo/Baja) reescribiendo el archivo

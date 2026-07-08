@@ -294,8 +294,10 @@ def mostrar_todos_los_prestamos():
         print("No hay archivo de prestamos todavia.")
         return
 
+    contador = 0
+    activos = 0
+    devueltos = 0
     with open(RUTA_PRESTAMOS, "r", encoding="utf-8") as archivo:
-
         for linea in archivo:
             linea_limpia = linea.strip()
             if not linea_limpia:
@@ -310,8 +312,10 @@ def mostrar_todos_los_prestamos():
                 isbn = partes[3]
                 dias = partes[4]
                 estado = partes[5]
+                contador += 1
 
                 if estado == "(REINTEGRADO)":
+                    devueltos += 1
                     if len(partes) > 6:
                         importe_abonado = partes[6]
                     else:
@@ -321,4 +325,6 @@ def mostrar_todos_los_prestamos():
                             importe_abonado = "?"
                     print(f"DNI: {dni_u} - Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}] - Importe Abonado: ${importe_abonado}")
                 else:
+                    activos += 1
                     print(f"DNI: {dni_u} - Usuario: {usuario} - Libro: {libro} (ISBN: {isbn}) - Dias: {dias} [{estado}]")
+    print(f"\nTotal de prestamos: {contador} | En curso: {activos} | Devueltos: {devueltos}")
