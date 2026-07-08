@@ -1,104 +1,100 @@
-# LabpythonD34
-INTEGRANTES (Com isiD 1.4k)
+# LabpythonD34 — Sistema de Gestión de Biblioteca
 
-  Alejandro Sebastian Barboza,
-  Lisandro Samuel Iturri,
-  Rolon Dilan Cesar Alfredo,
-  Baez Jorge Matias,
-  Renzo Nicolas Benitez,
-  
-******************************************************************
+**Escenario 7 | Comisión isiD 1.4k**
 
-Escenario 7. Sistema de biblioteca
+Integrantes:
+- Alejandro Sebastian Barboza
+- Lisandro Samuel Iturri
+- Rolon Dilan Cesar Alfredo
+- Baez Jorge Matias
+- Renzo Nicolas Benitez
 
-"El sistema deberá gestionar préstamos y devoluciones dentro de una biblioteca. La solución podrá incluir registro de usuarios, préstamos de libros, devoluciones, control de disponibilidad y cálculo de multas simples por demora.
-Asimismo, podrá incorporar estadísticas relacionadas con libros más solicitados o cantidad de préstamos realizados."
+---
 
-******************************************************************
-Todo sobre la creación y evolución de este proyecto.
-Contiene:
-	>>DOCUMENTACIÓN
-	>>HISTORIA
-	>>SOLUCIÓN DE PROBLEMAS
-******************************************************************
->>DOCUMENTACIÓN
-I. RESUMEN
-II. REQUISITOS
-III. INSTALACIÓN
-IV. USO
-V. ESTRUCTURA
-VI. CREDITOS
-******************************************************************
-I. RESUMEN
-	Programa que permite realizar un seguimiento del estado de un producto:(libros),y estado de Cuenta de clientes:(usuarios)
-  ,permitiendo la obtencion de un prestamo (el cual consta de una multa por morosidad por atrazo de devolucion), permite ver:
-  1.datos de clientes (ACTIVOS/BAJA)
-  2.Libros disponibles/reservado/reintegrado(devuelto), con sus respectivos motos
-II. REQUISITOS
-	Requiere:
-		Python 3.14.6
-  /no requiere de uso de internet, no requiere de dependencias ni programas externos.
-III.  INSTALACIÓN
-	Este programa es portable, no requiere de alguna instalación en particular, para sus librerías:
-	consulta REQUISITOS (.II)
-IV. USO
-	Abre el programa desde su ejecutable, agrega los usuarios a gestionar
-	desde el menú de Solicitudes o editando usuarios.txt, luego para agregar pedidos
-  dirigete al apartado de reservas(puedes reservar mas de uno), al momento de realizar dicha reserva se actualizara
-  prestamos.txt y veras los libros en obtencion.
-  Para devolver un libro dirigete a Ingresar Libros y cargalos manualmente o todos de una vez, cobrandote o no morosidad.
-  Y listo esto es todo el progama de Gestion de Biblioteca.
-VI. CREDITOS
-	Programa hecho en Python 3.14.6
-	Integrantes :
-		Alejandro Sebastian Barboza
-    Lisandro Samuel Iturri
-    Rolon Dilan Cesar Alfredo
-    Baez Jorge Matias
-    Renzo Nicolas Benitez
-	2026
-  ******************************************************************
->>HISTORIA
-I. INICIOS
-II. ESTRUCTURA Y FUNDAMENTOS
-III. TRABAJO
-IV. FUTURO
-******************************************************************
-I. INICIOS
-  El programa surgio como modelo de gestion de datos para usuarios bibliotecarios
-  pudiendo controlar datos entrega y devolucion de libros, manejo de interes por morosidad
-  creacion y baja de usuarios.
+## Descripcion
 
-II. ESTRUCTURA Y FUNDAMENTOS
-	La estructura: optamos por un 1 carpeta con todas las funciones necesarios, 1 carpeta con todos los registros.txt necesarios, y un main.py
-  que dirige todo el programa.
-III. TRABAJO
-	El trabajo se dividio por modulos, cada integrante trabajo en modulos individuales, teniendo asi
-  una fluctuacion de feedback por ambas partes iguales, mejorando asi el programa
-IV. FUTURO
-	Las próximas actualizaciones incluirá:
-		soporte para input de mouse.
-		estadísticas avanzadas.
-		calendario
-		,etc.
+Sistema de biblioteca que gestiona prestamos y devoluciones de libros, registro de usuarios, control de disponibilidad y calculo de multas por demora. Incluye modulo de estadisticas sobre los libros mas solicitados y cantidad de prestamos realizados.
 
-******************************************************************
->>SOLUCIÓN DE PROBLEMAS:
-q. preguntas frecuentes
-a. respuestas
-	q. "no puedo abrir el programa"
-    asegurate de que ninguna aplicacion intervenga con la descarga , para que asi puedan descargarse los archivos necesarios
-	q. "no me figura ninguna cuenta"
-	  puedes agregarla manualmente desde el bloc de notas usuarios.txt o desde la opcion SOLICITUDES/AGREGAR USUARIO.
-		1. Incluye el programa por medio de configuración o por el usuario.txt
+---
 
-******************************************************************
->>USO DE LA IA.
+## Requisitos
 
-Se utilizó Claude (Anthropic) como herramienta de apoyo durante el desarrollo, específicamente para:
+- Python 3.x
+- Sin dependencias externas ni conexion a internet
 
-1	Revisar el código ya escrito por el grupo y detectar errores puntuales (por ejemplo, una inconsistencia entre el texto de una opción de menú y la función que realmente ejecutaba).
-2	Recibir sugerencias de corrección, que el equipo analizó y aplicó de forma consciente antes de incorporarlas.
-3	Ordenar el proceso de subida del proyecto a GitHub en commits progresivos, agrupando el trabajo por módulo/funcionalidad en lugar de subir todo el código de una sola vez.
+---
 
-Todas las decisiones de diseño (estructura de módulos, validaciones, cálculo de multas, manejo de errores) fueron discutidas y comprendidas por el equipo, que puede justificar cada una de ellas.
+## Instalacion
+
+El programa es portable. No requiere instalacion. Solo necesitas tener Python instalado.
+
+---
+
+## Uso
+
+1. Ejecuta `main.py` con Python.
+2. Desde el menu **Solicitudes**, agrega usuarios o editá directamente `data/usuarios.txt`.
+3. Ve al apartado de **Reservas** para registrar prestamos (podés hacer mas de uno).
+   - Al confirmar, se actualiza `data/prestamos.txt` y el libro queda registrado como prestado.
+4. Para devolver un libro, usá la opcion **Ingresar Libros**.
+   - Podés devolver de a uno o todos juntos. El sistema calculara la multa si corresponde.
+
+---
+
+## Estructura del proyecto
+
+```
+LabpythonD34/
+├── main.py               # Punto de entrada del programa
+├── complement/
+│   ├── usuarios.py       # Gestion de usuarios (alta/baja)
+│   ├── libros.py         # Gestion del catalogo de libros
+│   ├── prestamos.py      # Prestamos y devoluciones
+│   ├── estadisticas.py   # Estadisticas de uso
+│   └── menu.py           # Interfaz de menus
+└── data/
+    ├── usuarios.txt      # Registro de usuarios
+    ├── libros.txt        # Catalogo de libros
+    └── prestamos.txt     # Registro de prestamos activos
+```
+
+---
+
+## Solucion de problemas
+
+**"No puedo abrir el programa"**
+Asegurate de tener Python instalado y ejecutar el archivo `main.py` directamente desde la terminal o un IDE.
+
+**"No me figura ninguna cuenta"**
+Podés agregar usuarios desde el menu **Solicitudes > Agregar Usuario**, o editando manualmente `data/usuarios.txt`.
+
+---
+
+## Historia del proyecto
+
+El proyecto surgio como ejercicio de gestion de datos para un sistema bibliotecario, con foco en el control de entregas, devoluciones y morosidad de usuarios.
+
+El trabajo se dividio por modulos: cada integrante fue responsable de un modulo individual, con revision cruzada entre el equipo para mantener coherencia en el conjunto.
+
+**Posibles mejoras futuras:**
+- Soporte para input de mouse
+- Estadisticas avanzadas
+- Calendario de vencimientos
+
+---
+
+## Creditos
+
+Desarrollado en Python — 2026
+
+---
+
+## Uso de IA
+
+Se utilizo Claude (Anthropic) como herramienta de apoyo durante el desarrollo, especificamente para:
+
+1. Revisar el codigo escrito por el grupo y detectar errores puntuales.
+2. Recibir sugerencias de correccion, que el equipo analizo y aplico de forma consciente.
+3. Organizar los commits de GitHub de manera progresiva, agrupando el trabajo por modulo.
+
+Todas las decisiones de diseno (estructura de modulos, validaciones, calculo de multas, manejo de errores) fueron discutidas y comprendidas por el equipo.
