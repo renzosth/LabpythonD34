@@ -1,11 +1,11 @@
 # LabpythonD34
 INTEGRANTES (Com isiD 1.4k)
 
-  Alejandro Sebastian Barboza
-  Lisandro Samuel Iturri
-  Rolon Dilan Cesar Alfredo
-  Baez Jorge Matias
-  Renzo Nicolas Benitez
+  Alejandro Sebastian Barboza,
+  Lisandro Samuel Iturri,
+  Rolon Dilan Cesar Alfredo,
+  Baez Jorge Matias,
+  Renzo Nicolas Benitez,
   
 ******************************************************************
 
