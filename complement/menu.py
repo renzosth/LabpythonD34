@@ -10,7 +10,7 @@ def menu_solicitudes():
     print("1. AGREGAR USUARIO")
     print("2. BORRAR USUARIO")
     print("3. RESERVAR LIBRO")
-    print("4. INGRESAR LIBRO")
+    print("4. DEVOLVER LIBRO")
     print("5. VOLVER")
 
 
